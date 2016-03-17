@@ -54,10 +54,27 @@ var s3 ={
 		
 	},
 	drawNodes:function(n,lvl){
-		for(var i = 0 ; i < n.children.length ; i++){
-			console.log('text at ')
-			s3.text(10+lvl*50,i*50,n.children[i].name);
+		if(n.children && n.children.length>0){
+			var midpoint = $(canvas).height() /2;
+			
+			var yOffset = n.children.length * 50 * 3 / 2;
+			
+			for(var i = 0 ; i < n.children.length ; i++){
+				
+			}
 		}
+		
+		
+		//var children_length = n.children.length;
+		
+		//var HEIGHT_FILLER = 40;
+		//var HEIGHT_NODE
+		//var allocateHeight = 
+		
+		//for(var i = 0 ; i < n.children.length ; i++){
+		//	console.log('text at ')
+		//	s3.text(10+lvl*50,i*50,n.children[i].name);
+		//}
 	}
 	
 }
