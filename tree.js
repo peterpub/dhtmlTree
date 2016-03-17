@@ -1,5 +1,5 @@
 var s3 ={
-	line:function(x1,y1,x2,y2){
+	line:function(x1,y1,x2,y2){ 
 		var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 		line.setAttribute('x1',''+x1);
 		line.setAttribute('y1',''+y1);
