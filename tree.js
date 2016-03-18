@@ -12,31 +12,34 @@ var s3 ={
 	//},
 	text:function(x,y,str){
 		var div = document.createElement('div');
-		div.setAttribute('style','left:'+x+'px;top:'+y+'px;');
+		div.setAttribute('style','left:'+x+'px;top:'+y+'px;position:absolute;');
 		div.setAttribute('class','s3node');
 		div.innerHTML=str;		
-		canvas.appendChild(div);
+		console.log('appending');
+		console.log(div);
+		document.body.appendChild(div);
 	},
 	calcHeight : function(n){
 		var height = 0;
-		var recurs = function(n,lvl,arr){
-			if(lvl===undefined){
-				lvl = 0;
+		var recurs = function(n,depth,arr){
+			if(depth===undefined){
+				depth = 0;
+				n.childIndex=0;
 			}else{
-				++lvl;
+				++depth;
 			}
-			if(lvl>height){
-				height=lvl;
+			if(depth>height){
+				height=depth;
 			}
 			
-			n.row = lvl;
-			
+			n.depth = depth;
 			
 			
 			if(n.children){
-				for(i = 0 ; i< n.children.length ; i++){
-					n.cell = i;
-					recurs(n.children[i],lvl);
+				for(var i = 0 ; i< n.children.length ; i++){
+					console.log(i+' th of '+ n.children.length);
+					n.children[i].childIndex = i;
+					recurs(n.children[i],depth);
 				}
 			}				
 		}
@@ -44,7 +47,32 @@ var s3 ={
 		return height+1;						
 	},
 	init:function(){
-	this.root =	{"name":"n_1","children":[{"name":"n_2","children":[{"name":"n_3","children":[{"name":"n_4","children":[{"name":"n_5"},{"name":"n_6"},{"name":"n_7"},{"name":"n_8"},{"name":"n_9"},{"name":"n_10"},{"name":"n_11"},{"name":"n_12"},{"name":"n_13"},{"name":"n_14"}]},{"name":"n_15","children":[{"name":"n_16"},{"name":"n_17"},{"name":"n_18"},{"name":"n_19"},{"name":"n_20"},{"name":"n_21"},{"name":"n_22"},{"name":"n_23"},{"name":"n_24"},{"name":"n_25"},{"name":"n_26"},{"name":"n_27"},{"name":"n_28"},{"name":"n_29"},{"name":"n_30"},{"name":"n_31"}]},{"name":"n_32","children":[{"name":"n_33"},{"name":"n_34"}]},{"name":"n_35","children":[{"name":"n_36"},{"name":"n_37"},{"name":"n_38"},{"name":"n_39"},{"name":"n_40"},{"name":"n_41"},{"name":"n_42"},{"name":"n_43"}]},{"name":"n_44","children":[{"name":"n_45"}]},{"name":"n_46","children":[{"name":"n_47"},{"name":"n_48"},{"name":"n_49"},{"name":"n_50"},{"name":"n_51"},{"name":"n_52"},{"name":"n_53"},{"name":"n_54"},{"name":"n_55"},{"name":"n_56"},{"name":"n_57"},{"name":"n_58"},{"name":"n_59"},{"name":"n_60"},{"name":"n_61"}]},{"name":"n_62","children":[{"name":"n_63"},{"name":"n_64"},{"name":"n_65"},{"name":"n_66"},{"name":"n_67"},{"name":"n_68"},{"name":"n_69"},{"name":"n_70"},{"name":"n_71"},{"name":"n_72"},{"name":"n_73"},{"name":"n_74"}]},{"name":"n_75","children":[{"name":"n_76"}]}]},{"name":"n_77","children":[{"name":"n_78","children":[{"name":"n_79"},{"name":"n_80"},{"name":"n_81"}]},{"name":"n_82","children":[{"name":"n_83"},{"name":"n_84"},{"name":"n_85"},{"name":"n_86"},{"name":"n_87"}]},{"name":"n_88","children":[{"name":"n_89"},{"name":"n_90"},{"name":"n_91"},{"name":"n_92"}]}]},{"name":"n_93","children":[{"name":"n_94","children":[{"name":"n_95"}]},{"name":"n_96","children":[{"name":"n_97"},{"name":"n_98"},{"name":"n_99"},{"name":"n_100"},{"name":"n_101"},{"name":"n_102"},{"name":"n_103"},{"name":"n_104"},{"name":"n_105"},{"name":"n_106"},{"name":"n_107"},{"name":"n_108"},{"name":"n_109"},{"name":"n_110"},{"name":"n_111"},{"name":"n_112"},{"name":"n_113"},{"name":"n_114"},{"name":"n_115"},{"name":"n_116"}]},{"name":"n_117","children":[{"name":"n_118"},{"name":"n_119"},{"name":"n_120"}]},{"name":"n_121","children":[{"name":"n_122"}]}]}]},{"name":"n_123","children":[{"name":"n_124","children":[{"name":"n_125","children":[{"name":"n_126"}]},{"name":"n_127","children":[{"name":"n_128"}]},{"name":"n_129","children":[{"name":"n_130"},{"name":"n_131"},{"name":"n_132"},{"name":"n_133"},{"name":"n_134"}]}]},{"name":"n_135","children":[{"name":"n_136","children":[{"name":"n_137"},{"name":"n_138"},{"name":"n_139"},{"name":"n_140"},{"name":"n_141"}]}]},{"name":"n_142","children":[{"name":"n_143","children":[{"name":"n_144"}]}]}]}]}
+	this.root =	
+	{
+		"name":"r",
+		"children":
+		[
+		    {
+		    	"name":"n1",
+		    	"children":
+		    	[
+		    	    {
+		    	    	"name":"n1.1"
+		    	    }
+		    	]
+		    },
+		    {
+		    	"name":"n2",
+		    	"children":
+		    	[
+		    	 	{
+		    	 		"name":"n2.1"
+		    	 	}
+		    	]
+		    }
+		]
+	};
+		    	    	
 		var arr=[];
 		var LENGTH = this.calcHeight(this.root,arr);
 		console.log(LENGTH);
@@ -53,17 +81,27 @@ var s3 ={
 		
 		
 	},
-	drawNodes:function(n,lvl){
-		if(n.children && n.children.length>0){
-			var midpoint = $(canvas).height() /2;
-			
-			var yOffset = n.children.length * 50 * 3 / 2;
-			
-			for(var i = 0 ; i < n.children.length ; i++){
-				
+	drawNode:function(n){
+		//if(n.children && n.children.length>0){
+		//	var midpoint = $(canvas).height() /2;
+		//	
+		//	var yOffset = n.children.length * 50 * 3 / 2;
+		//	
+		//	for(var i = 0 ; i < n.children.length ; i++){
+		//		
+		//	}
+		//}
+		console.log('**')
+		console.log(n.name);
+		console.log(n.depth);
+		console.log(n.childIndex);
+		console.log('**');
+		s3.text(20+n.depth*210,20+n.childIndex*210,n.name+' '+ n.depth+' '+n.childIndex);
+		if(n.children){
+			for(var c = 0 ; c <n.children.length ; c++){
+				s3.drawNode(n.children[c]);
 			}
 		}
-		
 		
 		//var children_length = n.children.length;
 		
@@ -79,4 +117,4 @@ var s3 ={
 	
 }
 s3.init();
-s3.drawNodes(s3.root);
+s3.drawNode(s3.root);
